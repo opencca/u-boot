@@ -119,6 +119,27 @@
 					};
 #endif
 				};
+				@rmm-SEQ {
+					fit,operation = "split-elf";
+					description = "RMM";
+					type = "firmware";
+					arch = "arm64";
+					os = "rmm";
+					compression = "none";
+					fit,load;
+					fit,entry;
+					fit,data;
+					elf,adjust-load	= <CONFIG_RMM_ELF_ADJUST_BASE>;
+					elf,adjust-entry	= <CONFIG_RMM_ELF_ADJUST_BASE>;
+					atf-rmm {
+						optional;
+					};
+			#ifdef CONFIG_SPL_FIT_SIGNATURE
+					hash {
+						algo = "sha256";
+					};
+			#endif
+				};
 #else
 				op-tee {
 					description = "OP-TEE";

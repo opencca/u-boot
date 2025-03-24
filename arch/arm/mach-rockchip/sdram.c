@@ -41,8 +41,8 @@ int dram_init_banksize(void)
 	size_t top = min((unsigned long)ram_top, (unsigned long)(gd->ram_top));
 
 #ifdef CONFIG_ARM64
-	/* Reserve 0x200000 for ATF bl31 */
-	gd->bd->bi_dram[0].start = 0x200000;
+	/* Reserve 0x10200000 (32+256 MB) for ATF bl31 and RMM */
+	gd->bd->bi_dram[0].start = 0x10200000; 
 	gd->bd->bi_dram[0].size = top - gd->bd->bi_dram[0].start;
 
 	/* Add usable memory beyond the blob of space for peripheral near 4GB */

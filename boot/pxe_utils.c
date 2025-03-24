@@ -598,6 +598,20 @@ static int label_boot(struct pxe_context *ctx, struct pxe_label *label)
 		strcat(bootargs, ip_str);
 		strcat(bootargs, mac_str);
 
+		// opencca: overwrite boot args in uboot
+		#ifdef CONFIG_BOOTARGS_OVERWRITE
+		if(strncmp(CONFIG_BOOTARGS_OVERWRITE, "", CONFIG_SYS_CBSIZE) != 0) {
+			printf("Using CONFIG_BOOTARGS_OVERWRITE=%s\n", CONFIG_BOOTARGS_OVERWRITE);
+			if (strlen(bootargs) + strlen(CONFIG_BOOTARGS_OVERWRITE) + 1 >
+				sizeof(bootargs)) {
+					printf("bootarg overflow %zd+%zd+1 > %zd\n",
+					strlen(bootargs), strlen(CONFIG_BOOTARGS_OVERWRITE),
+					sizeof(bootargs));
+				goto cleanup;
+			}
+			strcat(bootargs, CONFIG_BOOTARGS_OVERWRITE);
+		}
+		#endif
 		cli_simple_process_macros(bootargs, finalbootargs,
 					  sizeof(finalbootargs));
 		env_set("bootargs", finalbootargs);

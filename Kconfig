@@ -730,6 +730,11 @@ config RK3588_HW_DEBUG
 	help
 	  RK3588 enable hardware debugging
 
+config BOOTARGS_OVERWRITE
+	string "cmdline argument overwrite (ext2linux)"
+	default ""
+	help
+	  "Arguments to post append to cmdline before boot (ext2linux)"
 
 endmenu		# General setup
 

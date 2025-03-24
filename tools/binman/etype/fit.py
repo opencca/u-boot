@@ -632,6 +632,20 @@ class Entry_fit(Entry_section):
                     bytes: Contents of segment
                 entry_addr (int): entry address of ELF file
             """
+            #
+            # elf,adjust-entry/load allows us to place the 
+            # RMM elf at a configurable location
+            # in memory when being compiled with pie
+            #
+            adjust_entry = 0
+            adjust_load = 0
+            for pname, prop in node.props.items():
+                if pname == 'elf,adjust-entry':
+                    adjust_entry += fdt_util.GetInt(node, pname, default=0)
+                elif pname == 'elf,adjust-load':
+                    adjust_load += fdt_util.GetInt(node, pname, default=0)
+
+
             for (seq, start, data) in segments:
                 node_name = node.name[1:].replace('SEQ', str(seq + 1))
                 with fsw.add_node(node_name):
@@ -640,10 +654,10 @@ class Entry_fit(Entry_section):
                         if not pname.startswith('fit,'):
                             fsw.property(pname, prop.bytes)
                         elif pname == 'fit,load':
-                            fsw.property_u32('load', start)
+                            fsw.property_u64('load', start + adjust_load)
                         elif pname == 'fit,entry':
                             if seq == 0:
-                                fsw.property_u32('entry', entry_addr)
+                                fsw.property_u64('entry', entry_addr + adjust_entry)
                         elif pname == 'fit,data':
                             fsw.property('data', bytes(data))
                         elif pname != 'fit,operation':

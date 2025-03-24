@@ -22,6 +22,7 @@
 #define ATF_BL31_IMAGE_ID	0x03
 #define ATF_BL32_IMAGE_ID	0x04
 #define ATF_BL33_IMAGE_ID	0x05
+#define ATF_RMM_IMAGE_ID	35
 
 #define ATF_EP_SECURE	0x0
 #define ATF_EP_NON_SECURE	0x1

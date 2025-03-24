@@ -931,6 +931,13 @@ struct bl_params *bl2_plat_get_bl31_params_v2(uintptr_t bl32_entry,
 struct bl_params *bl2_plat_get_bl31_params_v2_default(uintptr_t bl32_entry,
 						      uintptr_t bl33_entry,
 						      uintptr_t fdt_addr);
+
+/** an implementation of bl2_plat_get_bl31_params_v2 with an additional
+   arm realm management monitor */
+struct bl_params *bl2_plat_get_bl31_rmm_params_v2(uintptr_t bl32_entry,
+					      uintptr_t bl33_entry,
+						  uintptr_t rmm_entry,
+					      uintptr_t fdt_addr);
 /**
  * spl_optee_entry - entry function for optee
  *

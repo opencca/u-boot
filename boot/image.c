@@ -134,6 +134,7 @@ static const table_entry_t uimage_os[] = {
 #endif
 	{	IH_OS_OPENSBI,	"opensbi",	"RISC-V OpenSBI",	},
 	{	IH_OS_EFI,	"efi",		"EFI Firmware" },
+	{	IH_OS_RMM,	"rmm",		"Arm RMM Firmware" },
 
 	{	-1,		"",		"",			},
 };

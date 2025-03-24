@@ -716,6 +716,13 @@ config SYS_CLK_FREQ
 
 source "api/Kconfig"
 
+config RMM_ELF_ADJUST_BASE
+	hex "RMM ELF load and entry base"
+	default 0x201000
+	help
+	  Set base address of RMM image when SPL loads ELF into memory.
+	  This allows for pie compiled ELF to be properly loaded.\
+	  
 endmenu		# General setup
 
 source "boot/Kconfig"

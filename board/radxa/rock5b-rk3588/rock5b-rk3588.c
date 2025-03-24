@@ -17,6 +17,17 @@ int rock5b_add_reserved_memory_fdt_nodes(void *new_blob)
 		.start = 0x3fff00000,
 		.end = 0x3ffffffff,
 	};
+
+	/* 
+	 * XXX: opencca: For now we mark 2nd dram bank as not available.
+	 * this way we are compatible with different configurations of dram
+	 * on board.
+	 */
+	struct fdt_memory gap3 = {
+		.start = 0x100000000,
+		.end = 0x3ffffffff,
+	};
+
 	unsigned long flags = FDTDEC_RESERVED_MEMORY_NO_MAP;
 	unsigned int ret;
 
@@ -28,8 +39,14 @@ int rock5b_add_reserved_memory_fdt_nodes(void *new_blob)
 	if (ret)
 		return ret;
 
-	return fdtdec_add_reserved_memory(new_blob, "gap2", &gap2,  NULL, 0,
+	ret = fdtdec_add_reserved_memory(new_blob, "gap2", &gap2,  NULL, 0,
 					  NULL, flags);
+	if (ret)
+		return ret;
+
+	return fdtdec_add_reserved_memory(new_blob, "gap3", &gap3,  NULL, 0,
+					  NULL, flags);
+		
 }
 
 int ft_board_setup(void *blob, struct bd_info *bd)

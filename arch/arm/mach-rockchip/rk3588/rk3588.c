@@ -11,6 +11,7 @@
 #include <asm/arch-rockchip/bootrom.h>
 #include <asm/arch-rockchip/hardware.h>
 #include <asm/arch-rockchip/ioc_rk3588.h>
+#include <asm/arch-rockchip/grf_rk3588.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -40,7 +41,12 @@ DECLARE_GLOBAL_DATA_PTR;
 const char * const boot_devices[BROM_LAST_BOOTSOURCE + 1] = {
 	[BROM_BOOTSOURCE_EMMC] = "/mmc@fe2e0000",
 	[BROM_BOOTSOURCE_SPINOR] = "/spi@fe2b0000/flash@0",
+	#ifdef CONFIG_RK3588_HW_DEBUG
+	// opencca: remove sdcard reference for hardare debug
+	// [BROM_BOOTSOURCE_SD] = "/mmc@fe2c0000",
+	#else
 	[BROM_BOOTSOURCE_SD] = "/mmc@fe2c0000",
+	#endif
 	[BROM_BOOTSOURCE_SPINOR_RK3588] = "/spi@fe2b0000/flash@0",
 	[BROM_BOOTSOURCE_USB] = "/usb@fc000000",
 };
@@ -86,6 +92,20 @@ enum {
 	GPIO0B6_REFER		= 8,
 	GPIO0B6_UART2_RX_M0	= 10,
 };
+
+
+#ifdef CONFIG_RK3588_HW_DEBUG
+#define FORCE_JTAG_BIT   (1 << 14)
+__maybe_unused static void enable_force_jtag(void)
+{
+	static struct rk3588_sysgrf * const sys_grf = (void *)SYS_GRF_BASE;
+       /* Enable JTAG exposed on SDMMC */
+       rk_setreg(&sys_grf->soc_con[6], FORCE_JTAG_BIT);
+	   volatile int* addr = (volatile int*) 0xfd58c098;
+	   *addr = 0xFF005500;
+}
+#endif
+
 
 void board_debug_uart_init(void)
 {
@@ -160,6 +180,9 @@ int arch_cpu_init(void)
 	secure_reg &= 0xffff0000;
 	writel(secure_reg, FIREWALL_SYSMEM_BASE + FW_SYSM_MST27_REG);
 #endif
+	#ifdef CONFIG_RK3588_HW_DEBUG
+	enable_force_jtag();
+	#endif
 
 	return 0;
 }

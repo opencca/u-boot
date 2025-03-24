@@ -723,6 +723,14 @@ config RMM_ELF_ADJUST_BASE
 	  Set base address of RMM image when SPL loads ELF into memory.
 	  This allows for pie compiled ELF to be properly loaded.\
 	  
+
+config RK3588_HW_DEBUG
+	bool "RK3588 enable hardware debugging"
+	default n
+	help
+	  RK3588 enable hardware debugging
+
+
 endmenu		# General setup
 
 source "boot/Kconfig"

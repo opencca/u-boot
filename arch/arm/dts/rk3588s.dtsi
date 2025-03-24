@@ -1435,6 +1435,7 @@
 		status = "disabled";
 	};
 
+#ifndef CONFIG_RK3588_HW_DEBUG
 	sdmmc: mmc@fe2c0000 {
 		compatible = "rockchip,rk3588-dw-mshc", "rockchip,rk3288-dw-mshc";
 		reg = <0x0 0xfe2c0000 0x0 0x4000>;
@@ -1449,6 +1450,12 @@
 		power-domains = <&power RK3588_PD_SDMMC>;
 		status = "disabled";
 	};
+#else
+	/* opencca: remove mmc reference for hardware debug */
+	sdmmc: mmc@fe2c0000 {
+		compatible = "dummy";
+	};
+#endif
 
 	sdio: mmc@fe2d0000 {
 		compatible = "rockchip,rk3588-dw-mshc", "rockchip,rk3288-dw-mshc";

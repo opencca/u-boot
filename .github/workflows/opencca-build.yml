@@ -1,0 +1,12 @@
+name: opencca-build
+
+on:
+  push:
+    branches: [opencca/main, opencca/systex25, opencca/next]
+  workflow_dispatch:
+
+jobs:
+  trigger-external:
+    uses: opencca/ci-scripts/.github/workflows/build-u-boot.yml@opencca/main
+    with:
+      branch: ${{ github.ref_name }}

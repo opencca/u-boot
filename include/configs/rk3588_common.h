@@ -15,17 +15,35 @@
 #define CFG_SYS_SDRAM_BASE		0
 #define SDRAM_MAX_SIZE			0xf0000000
 
-#define ENV_MEM_LAYOUT_SETTINGS		\
-	"scriptaddr=0x10E00000\0"	\
-	"script_offset_f=0x111FE000\0"	\
-	"script_size_f=0x10202000\0"	\
-	"pxefile_addr_r=0x11000000\0"	\
-	"fdt_addr_r=0x1A300000\0"	\
-	"fdtoverlay_addr_r=0x12200000\0"	\
-	"kernel_addr_r=0x12280000\0"	\
-	"ramdisk_addr_r=0x1A400000\0"	\
-	"kernel_comp_addr_r=0x18200000\0"	\
-	"kernel_comp_size=0x12200000\0"
+/*
+ * In OpenCCA we reserve the first 512 MB as RME private.
+ * So we place NS Linux after that.
+ * Lets place all load addresses after: 0x24000000
+ *
+ *  0x00000000  RME private (512 MB)
+ *  0x20000000  U-Boot proper / BL33
+ *  0x23000000  early U-Boot stack
+ *
+ *  Linux:
+ *  0x24000000  scriptaddr         (1 MB)
+ *  0x24100000  pxefile_addr_r     (1 MB)
+ *  0x24200000  fdtoverlay_addr_r  (1 MB)
+ *  0x24300000  fdt_addr_r         (1 MB)
+ *  0x24400000  kernel_addr_r      (256 MB)
+ *  0x34400000  ramdisk_addr_r     (128 MB)
+ *  0x3c000000  kernel_comp_addr_r (64 MB)
+ */
+#define ENV_MEM_LAYOUT_SETTINGS	\
+       "scriptaddr=0x24000000\0" \
+   "pxefile_addr_r=0x24100000\0" \
+"fdtoverlay_addr_r=0x24200000\0" \
+       "fdt_addr_r=0x24300000\0" \
+    "kernel_addr_r=0x24400000\0" \
+   "ramdisk_addr_r=0x34400000\0" \
+"kernel_comp_addr_r=0x3c000000\0"\
+  "kernel_comp_size=0x04000000\0" \
+"script_offset_f=0x0\0" \
+"script_size_f=0x0\0"
 
 #define CFG_EXTRA_ENV_SETTINGS \
 	"fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0" \

@@ -18,14 +18,18 @@ int rock5b_add_reserved_memory_fdt_nodes(void *new_blob)
 		.end = 0x3ffffffff,
 	};
 
-	/* 
-	 * XXX: opencca: For now we mark 2nd dram bank as not available.
-	 * this way we are compatible with different configurations of dram
-	 * on board.
-	 */
-	struct fdt_memory gap3 = {
-		.start = 0x100000000,
-		.end = 0x3ffffffff,
+	// OpenCCA RME reserve: ARM_DRAM_RME_RESERVE_BASE
+	struct fdt_memory opencca_rme_reserve = {
+		.start = 0,
+		.end = 0x1fffffff,
+	};
+
+	// The RMM must allocate granules for all RMM-managable memory.
+	// For easier board compatibility, limit addressable memory to 16 GB,
+	// even if 32 GB variant supports more RAM.
+	struct fdt_memory opencca_rmm_not_managed = {
+		.start = 0x3fc000000,
+		.end = 0x7ffffffff,
 	};
 
 	unsigned long flags = FDTDEC_RESERVED_MEMORY_NO_MAP;
@@ -44,8 +48,17 @@ int rock5b_add_reserved_memory_fdt_nodes(void *new_blob)
 	if (ret)
 		return ret;
 
-	return fdtdec_add_reserved_memory(new_blob, "gap3", &gap3,  NULL, 0,
-					  NULL, flags);
+	ret = fdtdec_add_reserved_memory(new_blob, 
+			"opencca_rme_reserve", &opencca_rme_reserve,  NULL, 0,
+			NULL, flags);
+	if (ret)
+		return ret;
+
+	ret = fdtdec_add_reserved_memory(new_blob, 
+			"opencca_rmm_not_managed", &opencca_rmm_not_managed,  NULL, 0,
+			NULL, flags);
+
+	return ret;
 		
 }
 
